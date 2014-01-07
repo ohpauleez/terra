@@ -74,7 +74,7 @@ SO_FLAGS  += -lclangFrontend -lclangDriver \
            #-lclangStaticAnalyzerCore \
            #-lclangFrontendTool \
            #-lclangARCMigrate
-           
+
 LLVM_FLAGS_MANUAL += \
 -lLLVMAsmParser \
 -lLLVMInstrumentation \
@@ -170,7 +170,7 @@ endif
 # LFLAGS += -lLLVM-3.1
 
 ifeq ($(UNAME), Linux)
-LFLAGS += -ldl -pthread -Wl,-export-dynamic 
+LFLAGS += -ldl -pthread -Wl,-export-dynamic
 DYNFLAGS = -shared -fPIC -Wl,-export-dynamic -ldl -pthread
 else
 DYNFLAGS = -dynamiclib -single_module -undefined dynamic_lookup -fPIC
@@ -182,7 +182,7 @@ INCLUDE_PATH += -I build
 
 #makes luajit happy on osx 10.6 (otherwise luaL_newstate returns NULL)
 ifeq ($(UNAME), Darwin)
-LFLAGS += -pagezero_size 10000 -image_base 100000000 
+LFLAGS += -pagezero_size 10000 -image_base 100000000
 endif
 
 #so header include paths can be correctly configured on linux
@@ -235,13 +235,13 @@ $(LUAJIT_LIB): build/$(LUAJIT_TAR)
 	(cd build; tar -xf $(LUAJIT_TAR))
 	(cd $(LUAJIT_DIR); make CC=$(CC))
 	cp $(LUAJIT_DIR)/src/libluajit.a build/libluajit.a
-	
+
 $(LIBRARY):	$(addprefix build/, $(LIBOBJS))
 	rm -f $(LIBRARY)
 	$(AR) -cq $@ $^
 
 $(DYNLIBRARY):	$(addprefix build/, $(LIBOBJS))
-	$(CXX) $(DYNFLAGS) $^ -o $@ $(SO_FLAGS)  
+	$(CXX) $(DYNFLAGS) $^ -o $@ $(SO_FLAGS)
 
 $(EXECUTABLE):	$(addprefix build/, $(EXEOBJS)) $(LIBRARY)
 	$(CXX) $^ -o $@ $(LFLAGS) $(SO_FLAGS)
@@ -256,7 +256,7 @@ build/%.h:	src/%.lua $(PACKAGE_DEPS)
 
 #run clang on a C file to extract the header search paths for this architecture
 #genclangpaths.lua find the path arguments and formats them into a C file that is included by the cwrapper
-#to configure the paths	
+#to configure the paths
 build/clangpaths.h:	src/dummy.c $(PACKAGE_DEPS) src/genclangpaths.lua
 	$(LUAJIT_DIR)/src/luajit src/genclangpaths.lua $@ $(CLANG) $(FLAGS)
 
@@ -266,10 +266,10 @@ clean:
 
 purge:	clean
 	rm -rf build/*
- 
+
 package:
 	git archive --prefix=terra/ HEAD | bzip2 > terra-`git rev-parse --short HEAD`.tar.bz2
-	
+
 # dependency rules
 DEPENDENCIES = $(patsubst %.o,build/%.d,$(OBJS))
 build/%.d:	src/%.cpp $(PACKAGE_DEPS) $(GENERATEDHEADERS)
@@ -277,7 +277,8 @@ build/%.d:	src/%.cpp $(PACKAGE_DEPS) $(GENERATEDHEADERS)
 build/%.d:	src/%.c $(PACKAGE_DEPS) $(GENERATEDHEADERS)
 	@gcc $(FLAGS) -w -MM -MT '$@ $(@:.d=.o)' $< -o $@
 
-#if we are cleaning, then don't include dependencies (which would require the header files are built)	
+#if we are cleaning, then don't include dependencies (which would require the header files are built)
 ifeq ($(findstring $(MAKECMDGOALS),purge clean),)
 -include $(DEPENDENCIES)
 endif
+
