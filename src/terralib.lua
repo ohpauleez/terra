@@ -4128,7 +4128,7 @@ function terra.dir(obj,level)
   elseif t=='function' then s='function'
   elseif t=='userdata' then
     s='userdata'
-    for n,v in pairs(getmetatable(obj)) do  s = s .. " (" .. n .. "," .. dir(v) .. ")" end
+    for n,v in pairs(getmetatable(obj)) do  s = s .. " (" .. n .. "," .. terra.dir(v) .. ")" end
   elseif t=='thread' then s='thread'
   elseif t=='table' then
     s = '{'
@@ -4137,7 +4137,7 @@ function terra.dir(obj,level)
       if type(k)=='string' then
         k_str = '["' .. k_str .. '"]'
       end
-      s = s .. k_str .. ' = ' .. dir(v,level .. level) .. ', '
+      s = s .. k_str .. ' = ' .. terra.dir(v,level .. level) .. ', '
     end
     s = string.sub(s, 1, -3)
     s = s .. '}'
