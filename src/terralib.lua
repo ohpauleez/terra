@@ -723,6 +723,26 @@ end
 
 -- END MULTIMETHODS
 
+-- UTILITY FUNCTIONS
+
+function terra.range(i, to, step)
+    if i == nil then return end -- no args fails the iterate rather than an infinite sequence
+
+    if not to then
+        to = i
+        i  = to == 0 and 0 or (to > 0 and 1 or -1)
+    end
+
+    step = step or (i < to and 1 or -1)
+
+    -- step back (once) before we start
+    i = i - step
+
+    return function () if i == to then return nil end i = i + step return i, i end
+end
+
+--  END UTILITY FUNCTIONS
+
 -- GLOBALVAR
 
 terra.globalvar = {} --metatable for all global variables
